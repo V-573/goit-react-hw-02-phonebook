@@ -15,6 +15,12 @@ class App extends Component {
     number: '',
   };
 
+  handleDeleteContact = (id) => {
+    const updateContacts = this.state.contacts.filter(contact => contact.id !== id);
+    this.setState({ contacts: updateContacts });
+
+  };
+
   handleFilterChange = event => {
     this.setState({ filter: event.target.value });
   };
@@ -86,7 +92,7 @@ class App extends Component {
           <h3>Contacts</h3>
           <FindContacts handleFilterChange={this.handleFilterChange} />
 
-          <ListContact contacts={filteredContacts} />
+          <ListContact contacts={filteredContacts} onDeleteContact={this.handleDeleteContact} />
         </div>
       </>
     );
