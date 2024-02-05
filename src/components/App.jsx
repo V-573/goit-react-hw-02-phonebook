@@ -1,16 +1,96 @@
-export const App = () => {
-  return (
-    <div
-      style={{
-        height: '100vh',
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        fontSize: 40,
-        color: '#010101'
-      }}
-    >
-      React homework template
-    </div>
-  );
-};
+import '../index.css';
+import { Component } from 'react';
+import '../components/stylesApp.css';
+import Contacts from './Contacts';
+
+import { nanoid } from 'nanoid';
+import FindContacts from './FindContacts';
+import ListContact from './ListContact';
+
+class App extends Component {
+  state = {
+    contacts: [],
+    filter: '',
+    name: '',
+    number: '',
+  };
+
+  handleFilterChange = event => {
+    this.setState({ filter: event.target.value });
+  };
+
+  handleNameChange = event => {
+    this.setState({ name: event.target.value });
+  };
+
+  handleNumbersChange = event => {
+    this.setState({ number: event.target.value });
+  };
+
+  handleSubmit = event => {
+    event.preventDefault();
+    const { name, contacts, number } = this.state;
+
+    if (name.trim() === '' || number.trim() === '') {
+      alert('please enter a name.');
+      return;
+    }
+
+  
+
+    //verificar si el nombre ya existe
+    const isNameDuplicate = contacts.some(contact => contact.name === name);
+
+    if (isNameDuplicate) {
+       alert('this name already exist');
+      return;
+    }
+   
+  //genero un identificador unico con nanoid:
+    const id = nanoid();
+
+  
+    this.setState({
+      contacts: [...contacts, { id, name, number }],
+
+      name: '',
+      number: '',
+    });
+    };
+      
+
+  render() {
+    const { contacts, name, number, filter } = this.state;
+
+    const filteredContacts = contacts.filter(contact =>
+      contact.name.toLowerCase().includes(filter.toLowerCase())
+    );
+
+    return (
+      <>
+        <div style={{ marginLeft: '20px' }}>
+          <h1 className="phonebook.title">Phonebook</h1>
+
+          <div className="form-container">
+            <h4 className="input-name">Name</h4>
+
+            <Contacts
+              handleSubmit={this.handleSubmit}
+              handleNameChange={this.handleNameChange}
+              handleNumbersChange={this.handleNumbersChange}
+              value={name}
+              value2={number}
+            />
+          </div>
+
+          <h3>Contacts</h3>
+          <FindContacts handleFilterChange={this.handleFilterChange} />
+
+          <ListContact contacts={filteredContacts} />
+        </div>
+      </>
+    );
+  }
+}
+
+export default App;
